@@ -13,4 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Dsk_one_test"
-include ':app'
+include(
+    ":app",
+    ":core"
+)

@@ -7,8 +7,6 @@ plugins {
 }
 
 
-project.apply(from = "${project.rootDir}/codequality/detekt.gradle")
-
 @Suppress("UnstableApiUsage")
 android {
     compileSdk = AppConfig.COMPILE_SDK

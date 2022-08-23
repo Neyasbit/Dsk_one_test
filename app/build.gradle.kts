@@ -58,5 +58,5 @@ android {
 }
 dependencies {
     //implementation features
-    //implementation(project(Modules.Base.CORE))
+    implementation(project(Modules.Base.CORE))
 }

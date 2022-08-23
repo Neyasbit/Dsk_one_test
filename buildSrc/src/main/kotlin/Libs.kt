@@ -33,4 +33,9 @@ object Libs {
         private const val VERSION = "1.0.1"
         const val CORE = "io.arrow-kt:arrow-core:$VERSION"
     }
+
+    object RxKotlin {
+        private const val VERSION = "3.0.1"
+        const val CORE = "io.reactivex.rxjava3:rxkotlin:$VERSION"
+    }
 }
