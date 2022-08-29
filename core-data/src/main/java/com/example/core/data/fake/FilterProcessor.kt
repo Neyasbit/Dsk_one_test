@@ -22,7 +22,7 @@ interface FilterProcessor {
                 .toObservable()
                 .map { it.toDskComplex() }
                 .doOnNext {
-                    Log.e("1TAG", "filtering: start ${it.title}", )
+                    Log.e("1TAG", "filtering: start ${it.title}")
                 }
                 .filter {
                     Log.e("1TAG", "${it.title} roomFilter: ${roomFilter(filters.rooms, it)}")
@@ -46,15 +46,6 @@ interface FilterProcessor {
                 .toList()
 
         private fun areaFilter(areaRange: AreaRange, complex: DskComplex): Boolean {
-            Log.e(
-                "2TAG",
-                "areaFilter: ${
-                    areaRange.range.start.toInt() in complex.areaRange
-                            && areaRange.range.endInclusive.toInt() in complex.areaRange
-                            || (complex.areaRange.last <= areaRange.range.endInclusive
-                            && complex.areaRange.first >= areaRange.range.start)
-                }",
-            )
             return areaRange.range.start.toInt() in complex.areaRange
                     && areaRange.range.endInclusive.toInt() in complex.areaRange
                     || (complex.areaRange.last <= areaRange.range.endInclusive
