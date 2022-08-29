@@ -6,4 +6,5 @@
     <string name="price_tittle">Стоимость, млн ₽</string>
     <string name="price_from">от %.1fM ₽</string>
     <string name="time_tittle">%d минут</string>
+    <string name="ready_tittle">Готовность до</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.feature_complexs
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.core.BaseViewModel
@@ -16,9 +17,9 @@ import com.example.core_model.BuildQuarter
 import com.example.core_model.DskComplex
 import com.example.core_model.Filters
 import com.example.core_model.PriceRange
-import com.example.core_model.QuarterGenerator
 import com.example.core_model.Room
 import com.example.core_model.RoomsType
+import org.threeten.bp.LocalDate
 
 data class ViewState(
     val complexes: List<DskComplex> = emptyList(),
@@ -26,13 +27,15 @@ data class ViewState(
     val areaRange: AreaRange = AreaRange(),
     val priceRange: PriceRange = PriceRange(),
     val quarters: BuildQuarter = BuildQuarter(),
-    val builds: List<String> = emptyList()
+    val builds: List<LocalDate> = emptyList(),
+    val filterRooms: List<Int> = emptyList(),
 )
 
 sealed class ComplexUiEvent : UiEvent {
     data class OnRoomClicked(val room: Room) : ComplexUiEvent()
     data class OnAreaRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
     data class OnPriceRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
+    data class OnQuartersChanged(val date: LocalDate) : ComplexUiEvent()
 }
 
 sealed class ComplexDataEvent : DataEvent {
@@ -51,8 +54,6 @@ class ComplexViewModel(
     init {
         processDataEvent(ComplexDataEvent.StartFilters)
         processDataEvent(ComplexDataEvent.StartLoadData)
-
-
     }
 
     override fun initialViewState() = ViewState(
@@ -72,26 +73,30 @@ class ComplexViewModel(
             val newRooms = previousState.rooms.toMutableList()
             newRooms[uiEvent.room.type.ordinal] = uiEvent.room
 
-            val filterRooms = newRooms.dropLast(1).filter { it.isPressed }.map {
-                it.type.ordinal
-            }
+            val filterRooms = newRooms
+                .dropLast(1)
+                .filter { it.isPressed }
+                .map { it.type.ordinal }
 
             val filters = Filters(
                 previousState.areaRange,
                 previousState.priceRange,
                 previousState.quarters,
-                filterRooms
+                filterRooms,
+                previousState.builds
             )
 
             subscribeFilterList(filters)
-            previousState.copy(rooms = newRooms)
+            previousState.copy(rooms = newRooms, filterRooms = filterRooms)
         }
         is ComplexUiEvent.OnAreaRangeChanged -> {
             val areaRange = previousState.areaRange.copy(range = uiEvent.range)
             val filters = Filters(
                 areaRange,
                 previousState.priceRange,
-                previousState.quarters
+                previousState.quarters,
+                previousState.filterRooms,
+                previousState.builds
             )
             subscribeFilterList(filters)
             previousState.copy(areaRange = areaRange)
@@ -101,10 +106,23 @@ class ComplexViewModel(
             val filters = Filters(
                 previousState.areaRange,
                 priceRange,
-                previousState.quarters
+                previousState.quarters,
+                previousState.filterRooms,
+                previousState.builds
             )
             subscribeFilterList(filters)
             previousState.copy(priceRange = priceRange)
+        }
+        is ComplexUiEvent.OnQuartersChanged -> {
+            val filters = Filters(
+                previousState.areaRange,
+                previousState.priceRange,
+                previousState.quarters,
+                previousState.filterRooms,
+                listOf(uiEvent.date)
+            )
+            subscribeFilterList(filters)
+            previousState
         }
     }
 
@@ -116,12 +134,14 @@ class ComplexViewModel(
         ComplexDataEvent.StartLoadData -> {
             repository.getComplex().subscribe {
                 when (it) {
-                    ComplexStatus.InProgress -> {}
+                    ComplexStatus.InProgress -> {
+                        //todo progress
+                    }
                     is ComplexStatus.Success -> {
                         processDataEvent(ComplexDataEvent.OnLadedData(it.data))
                     }
                     is ComplexStatus.Error -> {
-
+                        //todo error handler
                     }
                 }
             }
@@ -135,24 +155,14 @@ class ComplexViewModel(
             previousState
         }
         is ComplexDataEvent.OnLadedFilters -> {
-
-            val quarterGenerator: QuarterGenerator = QuarterGenerator.Base()
-
-            val visibleBuildQuarters: List<String> =
-                listOf("Все", "Сдан") + quarterGenerator.generationWithStart(
-                    startQuarter = dataEvent.filters.buildQuarter.quarters.first().first,
-                    year = dataEvent.filters.buildQuarter.quarters.first().second
-                ) + dataEvent.filters.buildQuarter.quarters.drop(1)
-                    .flatMap { quarterGenerator.simpleGeneration(it.second) }
-
             previousState.copy(
                 areaRange = dataEvent.filters.areaRange,
                 priceRange = dataEvent.filters.priceRange,
-                quarters = dataEvent.filters.buildQuarter,
-                builds = visibleBuildQuarters
+                quarters = dataEvent.filters.buildQuarter
             )
         }
         is ComplexDataEvent.OnFilterComplex -> {
+            Log.e("7TAG", "dispatchDataEvent: ${dataEvent.listOfComplex}", )
             previousState.copy(complexes = dataEvent.listOfComplex)
         }
         is ComplexDataEvent.OnPriceRangeChangedProcess -> {
@@ -161,14 +171,18 @@ class ComplexViewModel(
     }
 
     private fun subscribeFilterList(filters: Filters) {
+        Log.e("3TAG", "subscribeFilterList: call $filters", )
         repository.filtering(filters).subscribe({
+            Log.e("3TAG", "subscribeFilterList: $it", )
             processDataEvent(ComplexDataEvent.OnFilterComplex(it))
-        }, {})
+        }, {
+            //todo error handling
+        })
     }
 }
 
 class ComplexViewModelFactory : ViewModelProvider.Factory {
-
+    //todo added di
     private val filterProcessor = FilterProcessor.Base()
     private val fakeSourceProcessor = FakeSourceProcessor.Base()
     private val repository: ComplexRepository =

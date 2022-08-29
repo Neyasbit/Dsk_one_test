@@ -3,6 +3,7 @@ package com.example.core.data.model
 import com.example.core_model.ComplexLabel
 import com.example.core_model.ComplexTransport
 import com.example.core_model.DskComplex
+import org.threeten.bp.LocalDate
 
 interface EntityMapper<Entity, DomainEntity> {
     fun Entity.mapFromEntity(): DomainEntity
@@ -15,7 +16,8 @@ fun DskResponceItem.toDskComplex(): DskComplex = DskComplex(
     priceRange = price_from..price_to,
     labels = labels.map { it.toComplexLabel() },
     transport = transport.toComplexTransport(),
-    rooms = rooms
+    rooms = rooms,
+    builds = build.filterNotNull().map { LocalDate.parse(it) }
 )
 
 fun Label.toComplexLabel(): ComplexLabel = ComplexLabel(

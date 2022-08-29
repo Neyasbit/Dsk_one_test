@@ -68,7 +68,8 @@ private fun Content(
             Spacer(modifier = Modifier.height(6.dp))
             PriceFilter(viewModel)
             Spacer(modifier = Modifier.height(6.dp))
-            ReadyToBuildDropDown("Готовность до", viewModel = viewModel)
+            ReadyToBuildDropDown(viewModel)
+            Spacer(modifier = Modifier.height(6.dp))
         }
         LazyColumn {
             items(items = vs.value.complexes) { complex ->

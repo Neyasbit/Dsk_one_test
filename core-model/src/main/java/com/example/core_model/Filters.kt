@@ -1,5 +1,6 @@
 package com.example.core_model
 
+import org.threeten.bp.LocalDate
 import java.util.*
 
 data class AreaRange(val range: ClosedFloatingPointRange<Float> = 0f..1f) {
@@ -17,21 +18,14 @@ data class PriceRange(val range: ClosedFloatingPointRange<Float> = 0f..1f) {
     val secondVisibleItem = priceFormatter(range.endInclusive)
 }
 
-data class BuildQuarter(val quarters: List<Pair<Int, Int>> = emptyList()) {
-
-    /*private val quarterGenerator: QuarterGenerator = QuarterGenerator.Base()
-
-    val visibleBuildQuarters: List<String> = quarterGenerator.generationWithStart(
-        startQuarter = quarters.first().first,
-        year = quarters.first().second
-    ) + quarters.drop(1).flatMap { quarterGenerator.simpleGeneration(it.second) }*/
-}
+data class BuildQuarter(val quarters: List<Pair<Int, Int>> = emptyList())
 
 data class Filters(
     val areaRange: AreaRange,
     val priceRange: PriceRange,
     val buildQuarter: BuildQuarter,
-    val rooms: List<Int> = emptyList()
+    val rooms: List<Int> = emptyList(),
+    val builds: List<LocalDate> = emptyList()
 )
 
 data class Room(
