@@ -1,0 +1,65 @@
+package com.example.core.data.model
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class DskResponceItem(
+    val area_from: Int,
+    val area_to: Int,
+    val build: List<String?>,
+    val build_from: String,
+    val build_to: String,
+    val city_id: Int,
+
+    @SerialName("class")
+    val dskClass: Int?,
+    val cost_from: String,
+    val decoration: List<Int>,
+    val decorationDescription: String,
+    val decorationTitle: String,
+    val dsk: Boolean,
+    val file: File,
+    val file_id: Int,
+    val finishconf: Boolean,
+    val flatFeatures: List<String> = emptyList(),
+    val flatType: Int,
+    val flats: Flats,
+    val flatsHasSalePrice: Boolean,
+    @SerialName("group-flat")
+    val groupFlat: Boolean,
+    val header_color: String?,
+    val hide_on_index: Boolean,
+    val hover_color: String?,
+    val id: Int,
+    val img: String,
+    val img_double: String,
+    val img_single: String,
+    val is_active: Boolean?,
+    val labels: List<Label>,
+    val lat: Double,
+    val launch_announcement: Boolean,
+    val lng: Double,
+    val logo: String,
+    val max_area: Double?,
+    val minPriceBuilt: Int,
+    val min_area: Double?,
+    val mortgages: List<Int>,
+    val new_view: Boolean,
+    val offer: Int,
+    val post_address: String,
+    val price_from: Int,
+    val price_to: Int,
+    val propertyClass: Int?,
+    val rooms: List<Int>,
+    val sidebar: Sidebar,
+    val sites: List<String>,
+    val slug: String,
+    val sort: Int,
+    val tile_size: Int,
+    val title: String,
+    val transport: Transport,
+    val type_flat: Int,
+    val uuid: String,
+    val vdsk: Boolean
+)

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filters">Фильтры</string>
+    <string name="rooms_amount">Количетсво комнат</string>
+    <string name="area_tittle">Площадь,м</string>
+    <string name="price_tittle">Стоимость, млн ₽</string>
+    <string name="price_from">от %.1fM ₽</string>
+    <string name="time_tittle">%d минут</string>
+</resources>
