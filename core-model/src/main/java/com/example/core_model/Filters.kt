@@ -21,9 +21,9 @@ data class PriceRange(val range: ClosedFloatingPointRange<Float> = 0f..1f) {
 data class BuildQuarter(val quarters: List<Pair<Int, Int>> = emptyList())
 
 data class Filters(
-    val areaRange: AreaRange,
-    val priceRange: PriceRange,
-    val buildQuarter: BuildQuarter,
+    val areaRange: AreaRange = AreaRange(),
+    val priceRange: PriceRange = PriceRange(),
+    val buildQuarter: BuildQuarter = BuildQuarter(),
     val rooms: List<Int> = emptyList(),
     val builds: List<LocalDate> = emptyList()
 )

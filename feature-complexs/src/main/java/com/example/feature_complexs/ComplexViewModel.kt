@@ -27,8 +27,10 @@ data class ViewState(
     val areaRange: AreaRange = AreaRange(),
     val priceRange: PriceRange = PriceRange(),
     val quarters: BuildQuarter = BuildQuarter(),
-    val builds: List<LocalDate> = emptyList(),
-    val filterRooms: List<Int> = emptyList(),
+    //уберу потом от сюда
+    val builds: List<LocalDate> = listOf(LocalDate.of(2015, 12, 1)),
+    val filterRooms: List<Int> = emptyList()
+    //todo merge filters
 )
 
 sealed class ComplexUiEvent : UiEvent {
@@ -148,7 +150,12 @@ class ComplexViewModel(
             previousState
         }
         is ComplexDataEvent.OnLadedData -> {
-            previousState.copy(complexes = dataEvent.items)
+            val initRooms: List<Int> =
+                dataEvent.items.map { it.rooms }.flatten().toSet().toList()
+            previousState.copy(
+                complexes = dataEvent.items,
+                filterRooms = initRooms
+            )
         }
         ComplexDataEvent.StartFilters -> {
             repository.filters.subscribe { processDataEvent(ComplexDataEvent.OnLadedFilters(it)) }
