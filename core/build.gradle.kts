@@ -13,6 +13,8 @@ dependencies {
     api(Libs.Compose.VIEW_MODEL)
     api(Libs.RxKotlin.CORE)
 
+    implementation("androidx.lifecycle:lifecycle-reactivestreams-ktx:2.5.1")
+
     testApi(Libs.Test.JUNIT)
     testApi(Libs.Test.COROUTINES)
     androidTestApi(Libs.Test.ANDROID_JUNIT)

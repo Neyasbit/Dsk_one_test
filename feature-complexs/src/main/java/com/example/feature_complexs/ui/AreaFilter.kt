@@ -9,11 +9,7 @@ import androidx.compose.material.RangeSlider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rxjava3.subscribeAsState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -25,7 +21,6 @@ import androidx.compose.ui.unit.TextUnit
 import com.example.feature_complexs.ComplexUiEvent
 import com.example.feature_complexs.ComplexViewModel
 import com.example.feature_complexs.R
-import com.example.feature_complexs.ViewState
 
 @Composable
 internal fun AreaFilter(viewModel: ComplexViewModel) {
@@ -59,13 +54,11 @@ internal fun AreaTittle(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun RangeContainer(
-    viewModel: ComplexViewModel,
-    valueRange: ClosedFloatingPointRange<Float> = 22f..109f
+    viewModel: ComplexViewModel
 ) {
 
-    val viewState = viewModel.viewState.subscribeAsState(initial = ViewState())
-    var sliderPosition by remember { mutableStateOf(22f..109f) }
-
+    val viewState =
+        viewModel.viewState.subscribeAsState(initial = viewModel.viewState.blockingFirst())
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(text = viewState.value.areaRange.firstVisibleItem)
@@ -73,13 +66,9 @@ internal fun RangeContainer(
     }
 
     RangeSlider(
-        values = sliderPosition,
-        onValueChange = {
-            viewModel.processUiEvent(ComplexUiEvent.OnAreaRangeChanged(it))
-            sliderPosition = it
-
-        },
+        values = viewState.value.areaRange.range,
+        onValueChange = { viewModel.processUiEvent(ComplexUiEvent.OnAreaRangeChanged(it)) },
         colors = SliderDefaults.colors(),
-        valueRange = valueRange
+        valueRange = viewState.value.areaRange.initialRange
     )
 }

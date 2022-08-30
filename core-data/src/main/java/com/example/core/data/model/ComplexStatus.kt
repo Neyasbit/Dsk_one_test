@@ -1,6 +1,5 @@
 package com.example.core.data.model
 
-import com.example.core.data.repository.fake.ComplexData
 import com.example.core_model.DskComplex
 
 sealed class ComplexStatus {

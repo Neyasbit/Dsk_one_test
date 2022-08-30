@@ -47,7 +47,7 @@ interface FilterProcessor {
 
         private fun areaFilter(areaRange: AreaRange, complex: DskComplex): Boolean {
             return areaRange.range.start.toInt() in complex.areaRange
-                    && areaRange.range.endInclusive.toInt() in complex.areaRange
+                    || areaRange.range.endInclusive.toInt() in complex.areaRange
                     || (complex.areaRange.last <= areaRange.range.endInclusive
                     && complex.areaRange.first >= areaRange.range.start)
         }
@@ -55,7 +55,7 @@ interface FilterProcessor {
 
         private fun priceFilter(priceRange: PriceRange, complex: DskComplex) =
             priceRange.range.start.toInt() in complex.priceRange
-                    && priceRange.range.endInclusive.toInt() in complex.priceRange || ((complex.priceRange.last <= priceRange.range.endInclusive
+                    || priceRange.range.endInclusive.toInt() in complex.priceRange || ((complex.priceRange.last <= priceRange.range.endInclusive
                     && complex.priceRange.first >= priceRange.range.start))
 
 

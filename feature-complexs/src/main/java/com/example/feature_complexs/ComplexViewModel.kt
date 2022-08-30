@@ -1,6 +1,5 @@
 package com.example.feature_complexs
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.core.BaseViewModel
@@ -27,7 +26,7 @@ data class ViewState(
     val areaRange: AreaRange = AreaRange(),
     val priceRange: PriceRange = PriceRange(),
     val quarters: BuildQuarter = BuildQuarter(),
-    //уберу потом от сюда
+    //надо убрать от сюда
     val builds: List<LocalDate> = listOf(LocalDate.of(2015, 12, 1)),
     val filterRooms: List<Int> = emptyList()
     //todo merge filters
@@ -169,7 +168,6 @@ class ComplexViewModel(
             )
         }
         is ComplexDataEvent.OnFilterComplex -> {
-            Log.e("7TAG", "dispatchDataEvent: ${dataEvent.listOfComplex}", )
             previousState.copy(complexes = dataEvent.listOfComplex)
         }
         is ComplexDataEvent.OnPriceRangeChangedProcess -> {
@@ -178,9 +176,7 @@ class ComplexViewModel(
     }
 
     private fun subscribeFilterList(filters: Filters) {
-        Log.e("3TAG", "subscribeFilterList: call $filters", )
         repository.filtering(filters).subscribe({
-            Log.e("3TAG", "subscribeFilterList: $it", )
             processDataEvent(ComplexDataEvent.OnFilterComplex(it))
         }, {
             //todo error handling
