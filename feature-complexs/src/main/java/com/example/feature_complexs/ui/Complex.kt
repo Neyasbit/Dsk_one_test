@@ -1,5 +1,7 @@
 package com.example.feature_complexs.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -72,7 +75,7 @@ private fun Content(
             Spacer(modifier = Modifier.height(6.dp))
         }
         LazyColumn {
-            items(items = vs.value.complexes) { complex ->
+            items(items = vs.value.complexes, key = { it.title.hashCode() }) { complex ->
                 ComplexItem(complex)
             }
         }
@@ -80,12 +83,16 @@ private fun Content(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ComplexItem(
+private fun LazyItemScope.ComplexItem(
     complex: DskComplex
 ) {
     Spacer(modifier = Modifier.height(6.dp))
-    Column {
+    Column(
+        modifier =
+        Modifier.animateItemPlacement(animationSpec = tween(500))
+    ) {
         Box {
             AsyncImage(
                 model = complex.image,

@@ -1,5 +1,6 @@
 package com.example.feature_complexs.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,14 +62,14 @@ internal fun RangeContainer(
         viewModel.viewState.subscribeAsState(initial = viewModel.viewState.blockingFirst())
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = viewState.value.areaRange.firstVisibleItem)
-        Text(text = viewState.value.areaRange.secondVisibleItem)
+        Text(text = viewState.value.filters.areaRange.firstVisibleItem)
+        Text(text = viewState.value.filters.areaRange.secondVisibleItem)
     }
 
     RangeSlider(
-        values = viewState.value.areaRange.range,
+        values = viewState.value.filters.areaRange.range,
         onValueChange = { viewModel.processUiEvent(ComplexUiEvent.OnAreaRangeChanged(it)) },
         colors = SliderDefaults.colors(),
-        valueRange = viewState.value.areaRange.initialRange
+        valueRange = viewState.value.filters.areaRange.initialRange
     )
 }

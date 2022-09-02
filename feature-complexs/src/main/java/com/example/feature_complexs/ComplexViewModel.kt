@@ -1,5 +1,6 @@
 package com.example.feature_complexs
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.core.BaseViewModel
@@ -11,11 +12,8 @@ import com.example.core.data.fake.FakeSourceProcessor
 import com.example.core.data.fake.FilterProcessor
 import com.example.core.data.model.ComplexStatus
 import com.example.core.data.repository.fake.ComplexRepository
-import com.example.core_model.AreaRange
-import com.example.core_model.BuildQuarter
 import com.example.core_model.DskComplex
 import com.example.core_model.Filters
-import com.example.core_model.PriceRange
 import com.example.core_model.Room
 import com.example.core_model.RoomsType
 import org.threeten.bp.LocalDate
@@ -23,20 +21,14 @@ import org.threeten.bp.LocalDate
 data class ViewState(
     val complexes: List<DskComplex> = emptyList(),
     val rooms: List<Room> = emptyList(),
-    val areaRange: AreaRange = AreaRange(),
-    val priceRange: PriceRange = PriceRange(),
-    val quarters: BuildQuarter = BuildQuarter(),
-    //надо убрать от сюда
-    val builds: List<LocalDate> = listOf(LocalDate.of(2015, 12, 1)),
-    val filterRooms: List<Int> = emptyList()
-    //todo merge filters
+    val filters: Filters = Filters()
 )
 
 sealed class ComplexUiEvent : UiEvent {
     data class OnRoomClicked(val room: Room) : ComplexUiEvent()
     data class OnAreaRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
     data class OnPriceRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
-    data class OnQuartersChanged(val date: LocalDate) : ComplexUiEvent()
+    data class OnQuartersChanged(val sortedDate: Pair<String, LocalDate>) : ComplexUiEvent()
 }
 
 sealed class ComplexDataEvent : DataEvent {
@@ -58,9 +50,7 @@ class ComplexViewModel(
     }
 
     override fun initialViewState() = ViewState(
-        rooms = RoomsType.values().map {
-            Room(type = it)
-        })
+        rooms = RoomsType.values().map { Room(type = it) })
 
 
     override fun reduce(event: Event): ViewState = when (event) {
@@ -79,51 +69,26 @@ class ComplexViewModel(
                 .filter { it.isPressed }
                 .map { it.type.ordinal }
 
-            val filters = Filters(
-                previousState.areaRange,
-                previousState.priceRange,
-                previousState.quarters,
-                filterRooms,
-                previousState.builds
-            )
-
-            subscribeFilterList(filters)
-            previousState.copy(rooms = newRooms, filterRooms = filterRooms)
+            val roomFilter = previousState.filters.copy(rooms = filterRooms)
+            subscribeFilterList(roomFilter)
+            previousState.copy(rooms = newRooms, filters = roomFilter)
         }
         is ComplexUiEvent.OnAreaRangeChanged -> {
-            val areaRange = previousState.areaRange.copy(range = uiEvent.range)
-            val filters = Filters(
-                areaRange,
-                previousState.priceRange,
-                previousState.quarters,
-                previousState.filterRooms,
-                previousState.builds
-            )
-            subscribeFilterList(filters)
-            previousState.copy(areaRange = areaRange)
+            val areaRange = previousState.filters.areaRange.copy(range = uiEvent.range)
+            val areaFilter = previousState.filters.copy(areaRange = areaRange)
+            subscribeFilterList(areaFilter)
+            previousState.copy(filters = areaFilter)
         }
         is ComplexUiEvent.OnPriceRangeChanged -> {
-            val priceRange = previousState.priceRange.copy(range = uiEvent.range)
-            val filters = Filters(
-                previousState.areaRange,
-                priceRange,
-                previousState.quarters,
-                previousState.filterRooms,
-                previousState.builds
-            )
-            subscribeFilterList(filters)
-            previousState.copy(priceRange = priceRange)
+            val priceRange = previousState.filters.priceRange.copy(range = uiEvent.range)
+            val priceFilter = previousState.filters.copy(priceRange = priceRange)
+            subscribeFilterList(priceFilter)
+            previousState.copy(filters = priceFilter)
         }
         is ComplexUiEvent.OnQuartersChanged -> {
-            val filters = Filters(
-                previousState.areaRange,
-                previousState.priceRange,
-                previousState.quarters,
-                previousState.filterRooms,
-                listOf(uiEvent.date)
-            )
-            subscribeFilterList(filters)
-            previousState
+            val quarterFilter = previousState.filters.copy(sortedDate = uiEvent.sortedDate)
+            subscribeFilterList(quarterFilter)
+            previousState.copy(filters = quarterFilter)
         }
     }
 
@@ -151,21 +116,22 @@ class ComplexViewModel(
         is ComplexDataEvent.OnLadedData -> {
             val initRooms: List<Int> =
                 dataEvent.items.map { it.rooms }.flatten().toSet().toList()
+            val filters = previousState.filters.copy(rooms = initRooms)
             previousState.copy(
                 complexes = dataEvent.items,
-                filterRooms = initRooms
+                filters = filters
             )
         }
         ComplexDataEvent.StartFilters -> {
-            repository.filters.subscribe { processDataEvent(ComplexDataEvent.OnLadedFilters(it)) }
+            repository.filters.subscribe(
+                { processDataEvent(ComplexDataEvent.OnLadedFilters(it)) },
+                {
+                    Log.e("TAG", "dispatchDataEvent: ${it.message}")
+                })
             previousState
         }
         is ComplexDataEvent.OnLadedFilters -> {
-            previousState.copy(
-                areaRange = dataEvent.filters.areaRange,
-                priceRange = dataEvent.filters.priceRange,
-                quarters = dataEvent.filters.buildQuarter
-            )
+            previousState.copy(filters = dataEvent.filters)
         }
         is ComplexDataEvent.OnFilterComplex -> {
             previousState.copy(complexes = dataEvent.listOfComplex)

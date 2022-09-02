@@ -31,16 +31,16 @@ internal fun RangeContainer2(
         viewModel.viewState.subscribeAsState(initial = viewModel.viewState.blockingFirst())
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = viewState.value.priceRange.firstVisibleItem)
-        Text(text = viewState.value.priceRange.secondVisibleItem)
+        Text(text = viewState.value.filters.priceRange.firstVisibleItem)
+        Text(text = viewState.value.filters.priceRange.secondVisibleItem)
     }
 
     RangeSlider(
-        values = viewState.value.priceRange.range,
+        values = viewState.value.filters.priceRange.range,
         onValueChange = {
             viewModel.processUiEvent(ComplexUiEvent.OnPriceRangeChanged(it))
         },
         colors = SliderDefaults.colors(),
-        valueRange = viewState.value.priceRange.initialRange
+        valueRange = viewState.value.filters.priceRange.initialRange
     )
 }

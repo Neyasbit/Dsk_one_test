@@ -1,8 +1,10 @@
 package com.example.feature_complexs.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.OutlinedTextField
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import com.example.feature_complexs.ComplexUiEvent
 import com.example.feature_complexs.ComplexViewModel
 import com.example.feature_complexs.R
@@ -29,13 +32,12 @@ internal fun ReadyToBuildDropDown(
         viewModel.viewState.subscribeAsState(initial = viewModel.viewState.blockingFirst())
     var isSimpleDropDownExpanded by remember { mutableStateOf(false) }
 
-    val builds = viewState.value.quarters.quarters
-    //todo save in VM
-    var current by remember { mutableStateOf("") }
+    val builds = viewState.value.filters.buildQuarter.quarters
+
     Text(text = stringResource(R.string.ready_tittle).uppercase())
     Box {
         OutlinedTextField(
-            value = current,
+            value = viewState.value.filters.sortedDate.first,
             onValueChange = { },
             placeholder = { Text(text = builds.first().first) },
             enabled = false,
@@ -43,7 +45,12 @@ internal fun ReadyToBuildDropDown(
                 .clickable {
                     isSimpleDropDownExpanded = true
                 }
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .border(
+                    width = 2.dp,
+                    color = Color.Gray,
+                    shape = RoundedCornerShape(2.dp)
+                ),
             textStyle = TextStyle(color = Color.Black)
         )
 
@@ -54,9 +61,8 @@ internal fun ReadyToBuildDropDown(
         ) {
             builds.forEach {
                 DropdownMenuItem(onClick = {
-                    current = it.first
                     isSimpleDropDownExpanded = false
-                    viewModel.processUiEvent(ComplexUiEvent.OnQuartersChanged(it.second))
+                    viewModel.processUiEvent(ComplexUiEvent.OnQuartersChanged(it))
                 }, modifier = Modifier.fillMaxWidth()) {
                     Text(it.first)
                 }

@@ -1,5 +1,6 @@
 package com.example.core.data.fake
 
+import android.util.Log
 import com.example.core.data.fake.FakeDataSource.listOfComplex
 import com.example.core.data.model.ComplexStatus
 import com.example.core.data.model.toDskComplex
@@ -99,9 +100,8 @@ interface FakeSourceProcessor {
                             ) + quarterGenerator.simpleGeneration(quarters.drop(1).first().second) +
                                     quarterGenerator.simpleGeneration(quarters.last().second)
                         visibleBuildQuarters.toSet()
-                        visibleBuildQuarters
                     }) { first, second ->
-                    BuildQuarter((first + second))
+                    BuildQuarter((first + second).sortedBy { it.second })
                 }
     }
 }

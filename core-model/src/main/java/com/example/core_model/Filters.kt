@@ -32,7 +32,7 @@ data class Filters(
     val priceRange: PriceRange = PriceRange(),
     val buildQuarter: BuildQuarter = BuildQuarter(),
     val rooms: List<Int> = emptyList(),
-    val builds: List<LocalDate> = emptyList()
+    val sortedDate: Pair<String, LocalDate> = Pair("", LocalDate.MIN)
 )
 
 data class Room(

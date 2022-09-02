@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,19 +43,16 @@ internal fun FiltersContainer(
         targetValue = if (expandedState) 180f else 0f
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            )
-    ) {
-        Row(
+    Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = LinearOutSlowInEasing
+                    )
+                )
                 .border(
                     width = 2.dp,
                     color = Gray,
@@ -92,6 +88,6 @@ internal fun FiltersContainer(
         if (expandedState) {
             content()
         }
-    }
+
 }
 

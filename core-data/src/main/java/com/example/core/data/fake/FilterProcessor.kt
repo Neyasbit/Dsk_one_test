@@ -1,6 +1,5 @@
 package com.example.core.data.fake
 
-import android.util.Log
 import com.example.core.data.fake.FakeDataSource.listOfComplex
 import com.example.core.data.model.toDskComplex
 import com.example.core_model.AreaRange
@@ -17,32 +16,14 @@ interface FilterProcessor {
 
     class Base : FilterProcessor {
 
+        private val dskComplexList = listOfComplex.toObservable().map { it.toDskComplex() }
+
         override fun filtering(filters: Filters): Single<List<DskComplex>> =
-            listOfComplex
-                .toObservable()
-                .map { it.toDskComplex() }
-                .doOnNext {
-                    Log.e("1TAG", "filtering: start ${it.title}")
-                }
-                .filter {
-                    Log.e("1TAG", "${it.title} roomFilter: ${roomFilter(filters.rooms, it)}")
-                    roomFilter(filters.rooms, it)
-                }
-                .filter {
-                    Log.e("1TAG", "${it.title}  areaFilter: ${areaFilter(filters.areaRange, it)}")
-                    areaFilter(filters.areaRange, it)
-                }
-                .filter {
-                    Log.e("1TAG", "${it.title}  priceFilter: ${priceFilter(filters.priceRange, it)}")
-                    priceFilter(filters.priceRange, it)
-                }
-                .filter {
-                    Log.e("1TAG", "${it.title} buildsFilter: ${buildsFilter(filters.builds, it)}")
-                    buildsFilter(filters.builds, it)
-                }
-                .doOnNext {
-                    Log.e("1TAG", "filtering: end ${it.title}")
-                }
+            dskComplexList
+                .filter { roomFilter(filters.rooms, it) }
+                .filter { areaFilter(filters.areaRange, it) }
+                .filter { priceFilter(filters.priceRange, it) }
+                .filter { buildsFilter(filters.sortedDate.second, it) }
                 .toList()
 
         private fun areaFilter(areaRange: AreaRange, complex: DskComplex): Boolean {
@@ -55,14 +36,15 @@ interface FilterProcessor {
 
         private fun priceFilter(priceRange: PriceRange, complex: DskComplex) =
             priceRange.range.start.toInt() in complex.priceRange
-                    || priceRange.range.endInclusive.toInt() in complex.priceRange || ((complex.priceRange.last <= priceRange.range.endInclusive
+                    || priceRange.range.endInclusive.toInt() in complex.priceRange
+                    || ((complex.priceRange.last <= priceRange.range.endInclusive
                     && complex.priceRange.first >= priceRange.range.start))
 
 
         private fun roomFilter(rooms: List<Int>, complex: DskComplex) =
             complex.rooms.containsAll(rooms) || rooms.containsAll(complex.rooms)
 
-        private fun buildsFilter(quarter: List<LocalDate>, complex: DskComplex): Boolean =
-            complex.builds.any { it > quarter.first() }
+        private fun buildsFilter(quarter: LocalDate, complex: DskComplex): Boolean =
+            complex.builds.any { it > quarter }
     }
 }
