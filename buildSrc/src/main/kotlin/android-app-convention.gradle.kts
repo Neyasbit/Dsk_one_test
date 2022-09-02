@@ -59,3 +59,7 @@ android {
         java.srcDirs("src/$name/kotlin")
     }
 }
+
+dependencies {
+    api(Libs.Compose.ACTIVITY)
+}

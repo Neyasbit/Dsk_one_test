@@ -17,3 +17,6 @@ include(
     ":app",
     ":core"
 )
+include(":core-data")
+include(":feature-complexs")
+include(":core-model")

@@ -2,12 +2,8 @@ package com.example.core
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 
 /**
  * Одиночные ивенты: например для отображения диалога
@@ -49,11 +45,10 @@ abstract class BaseViewModel<VIEW_STATE: Any> : ViewModel() {
             initialViewState()
         )
     }
+
     val viewState: Observable<VIEW_STATE>
         get() = _viewState.hide()
 
-    private val _singleEvent: Channel<SingleEvent> = Channel()
-    val singleEvent = _singleEvent.receiveAsFlow()
 
     protected val previousState: VIEW_STATE
         get() = viewState.blockingFirst() ?: initialViewState()
@@ -77,13 +72,6 @@ abstract class BaseViewModel<VIEW_STATE: Any> : ViewModel() {
 
     protected fun processOutputEvent(event: OutputEvent) {
         updateState(event)
-    }
-
-    protected fun sendSingleEvent(event: SingleEvent, actionAfter: () -> Unit = {}) {
-        viewModelScope.launch {
-            _singleEvent.send(event)
-            actionAfter()
-        }
     }
 
     private fun updateState(event: Event) {

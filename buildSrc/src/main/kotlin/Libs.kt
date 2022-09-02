@@ -38,4 +38,16 @@ object Libs {
         private const val VERSION = "3.0.1"
         const val CORE = "io.reactivex.rxjava3:rxkotlin:$VERSION"
     }
+
+    object KotlinJson {
+        const val CORE = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0"
+    }
+
+    object Mockk {
+        const val CORE = "io.mockk:mockk:1.12.7"
+    }
+
+    object JakeWharton {
+        const val THREETEN = "com.jakewharton.threetenabp:threetenabp:1.3.1"
+    }
 }
