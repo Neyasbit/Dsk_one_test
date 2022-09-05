@@ -1,11 +1,17 @@
 package com.example.feature_complexs.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,10 +36,13 @@ import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.example.feature_complexs.ComplexUiEvent
+import com.example.feature_complexs.ComplexViewModel
 
 
 @Composable
 internal fun FiltersContainer(
+    viewModel: ComplexViewModel,
     title: String,
     titleFontSize: TextUnit = MaterialTheme.typography.h6.fontSize,
     content: @Composable () -> Unit
@@ -60,6 +69,7 @@ internal fun FiltersContainer(
                 )
                 .clickable {
                     expandedState = !expandedState
+                    viewModel.processUiEvent(ComplexUiEvent.VisibilityFilters(expandedState))
                 }
                 .padding(start = 6.dp)
         ) {
@@ -78,16 +88,22 @@ internal fun FiltersContainer(
                     .rotate(rotationState),
                 onClick = {
                     expandedState = !expandedState
+                    viewModel.processUiEvent(ComplexUiEvent.VisibilityFilters(expandedState))
                 }) {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = "Drop-Down Arrow"
                 )
             }
-        }
-        if (expandedState) {
+    }
+    AnimatedVisibility(
+        visible = expandedState,
+        enter = fadeIn() + slideInVertically(),
+        exit = fadeOut() + slideOutVertically()
+    ) {
+        Column {
             content()
         }
-
+    }
 }
 

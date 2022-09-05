@@ -37,6 +37,7 @@ object Libs {
     object RxKotlin {
         private const val VERSION = "3.0.1"
         const val CORE = "io.reactivex.rxjava3:rxkotlin:$VERSION"
+        const val RUNTIME = "androidx.compose.runtime:runtime-rxjava3:1.2.1"
     }
 
     object KotlinJson {
@@ -49,5 +50,15 @@ object Libs {
 
     object JakeWharton {
         const val THREETEN = "com.jakewharton.threetenabp:threetenabp:1.3.1"
+    }
+
+    object Accompanist {
+        private const val VERSION = "0.26.2-beta"
+        const val ViewPager = "com.google.accompanist:accompanist-pager:$VERSION"
+        const val Indicators = "com.google.accompanist:accompanist-pager-indicators:$VERSION"
+    }
+
+    object Coil {
+        const val BASE = "io.coil-kt:coil-compose:2.2.0"
     }
 }

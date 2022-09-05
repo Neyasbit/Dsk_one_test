@@ -36,7 +36,7 @@ internal fun RangeContainer2(
     }
 
     RangeSlider(
-        values = viewState.value.filters.priceRange.range,
+        value = viewState.value.filters.priceRange.range,
         onValueChange = {
             viewModel.processUiEvent(ComplexUiEvent.OnPriceRangeChanged(it))
         },

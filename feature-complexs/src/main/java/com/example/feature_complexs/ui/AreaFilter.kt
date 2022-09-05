@@ -67,7 +67,7 @@ internal fun RangeContainer(
     }
 
     RangeSlider(
-        values = viewState.value.filters.areaRange.range,
+        value = viewState.value.filters.areaRange.range,
         onValueChange = { viewModel.processUiEvent(ComplexUiEvent.OnAreaRangeChanged(it)) },
         colors = SliderDefaults.colors(),
         valueRange = viewState.value.filters.areaRange.initialRange

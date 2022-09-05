@@ -21,7 +21,8 @@ import org.threeten.bp.LocalDate
 data class ViewState(
     val complexes: List<DskComplex> = emptyList(),
     val rooms: List<Room> = emptyList(),
-    val filters: Filters = Filters()
+    val filters: Filters = Filters(),
+    val isVisibleFilters: Boolean = false
 )
 
 sealed class ComplexUiEvent : UiEvent {
@@ -29,6 +30,7 @@ sealed class ComplexUiEvent : UiEvent {
     data class OnAreaRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
     data class OnPriceRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
     data class OnQuartersChanged(val sortedDate: Pair<String, LocalDate>) : ComplexUiEvent()
+    class VisibilityFilters(val isVisible: Boolean) : ComplexUiEvent()
 }
 
 sealed class ComplexDataEvent : DataEvent {
@@ -37,7 +39,6 @@ sealed class ComplexDataEvent : DataEvent {
     object StartFilters : ComplexDataEvent()
     class OnLadedFilters(val filters: Filters) : ComplexDataEvent()
     class OnFilterComplex(val listOfComplex: List<DskComplex>) : ComplexDataEvent()
-    class OnPriceRangeChangedProcess(val listOfComplex: List<DskComplex>) : ComplexDataEvent()
 }
 
 class ComplexViewModel(
@@ -90,6 +91,7 @@ class ComplexViewModel(
             subscribeFilterList(quarterFilter)
             previousState.copy(filters = quarterFilter)
         }
+        is ComplexUiEvent.VisibilityFilters -> previousState.copy(isVisibleFilters = uiEvent.isVisible)
     }
 
     override fun onHandleErrorEvent(event: ErrorEvent): ViewState {
@@ -134,9 +136,6 @@ class ComplexViewModel(
             previousState.copy(filters = dataEvent.filters)
         }
         is ComplexDataEvent.OnFilterComplex -> {
-            previousState.copy(complexes = dataEvent.listOfComplex)
-        }
-        is ComplexDataEvent.OnPriceRangeChangedProcess -> {
             previousState.copy(complexes = dataEvent.listOfComplex)
         }
     }
