@@ -101,7 +101,7 @@ internal fun FiltersContainer(
         enter = fadeIn() + slideInVertically(),
         exit = fadeOut() + slideOutVertically()
     ) {
-        Column {
+        Column(modifier = Modifier.padding(all = 16.dp)) {
             content()
         }
     }

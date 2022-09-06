@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
             Dsk_one_testTheme {
                 // A surface container using the 'background' color from the theme
                 MainScreen()
-
             }
         }
     }

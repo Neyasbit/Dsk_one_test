@@ -34,7 +34,7 @@ internal fun ReadyToBuildDropDown(
 
     val builds = viewState.value.filters.buildQuarter.quarters
 
-    Text(text = stringResource(R.string.ready_tittle).uppercase())
+    Text(text = stringResource(R.string.ready_tittle))
     Box {
         OutlinedTextField(
             value = viewState.value.filters.sortedDate.first,

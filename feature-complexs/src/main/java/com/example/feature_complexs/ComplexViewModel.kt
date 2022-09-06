@@ -12,8 +12,10 @@ import com.example.core.data.fake.FakeSourceProcessor
 import com.example.core.data.fake.FilterProcessor
 import com.example.core.data.model.ComplexStatus
 import com.example.core.data.repository.fake.ComplexRepository
+import com.example.core_model.AreaRange
 import com.example.core_model.DskComplex
 import com.example.core_model.Filters
+import com.example.core_model.PriceRange
 import com.example.core_model.Room
 import com.example.core_model.RoomsType
 import org.threeten.bp.LocalDate
@@ -31,6 +33,7 @@ sealed class ComplexUiEvent : UiEvent {
     data class OnPriceRangeChanged(val range: ClosedFloatingPointRange<Float>) : ComplexUiEvent()
     data class OnQuartersChanged(val sortedDate: Pair<String, LocalDate>) : ComplexUiEvent()
     class VisibilityFilters(val isVisible: Boolean) : ComplexUiEvent()
+    object ResetFilters : ComplexUiEvent()
 }
 
 sealed class ComplexDataEvent : DataEvent {
@@ -92,6 +95,10 @@ class ComplexViewModel(
             previousState.copy(filters = quarterFilter)
         }
         is ComplexUiEvent.VisibilityFilters -> previousState.copy(isVisibleFilters = uiEvent.isVisible)
+        is ComplexUiEvent.ResetFilters -> {
+            //todo make
+            previousState
+        }
     }
 
     override fun onHandleErrorEvent(event: ErrorEvent): ViewState {
@@ -99,6 +106,7 @@ class ComplexViewModel(
     }
 
     private fun dispatchDataEvent(dataEvent: ComplexDataEvent) = when (dataEvent) {
+        //todo one added one request for filters(after pressed show)
         ComplexDataEvent.StartLoadData -> {
             repository.getComplex().subscribe {
                 when (it) {

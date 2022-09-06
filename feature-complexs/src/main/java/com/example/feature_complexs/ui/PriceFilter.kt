@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import com.example.feature_complexs.ComplexUiEvent
 import com.example.feature_complexs.ComplexViewModel
@@ -40,7 +41,10 @@ internal fun RangeContainer2(
         onValueChange = {
             viewModel.processUiEvent(ComplexUiEvent.OnPriceRangeChanged(it))
         },
-        colors = SliderDefaults.colors(),
+        colors = SliderDefaults.colors(
+            thumbColor = colorResource(id = R.color.light_blue),
+            activeTrackColor = colorResource(id = R.color.light_blue)
+        ),
         valueRange = viewState.value.filters.priceRange.initialRange
     )
 }

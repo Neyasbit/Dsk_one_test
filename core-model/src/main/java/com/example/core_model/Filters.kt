@@ -7,8 +7,8 @@ data class AreaRange(
     val initialRange: ClosedFloatingPointRange<Float> = 0f..1f,
     val range: ClosedFloatingPointRange<Float> = 0f..1f
 ) {
-    val firstVisibleItem = String.format(Locale.ROOT, "%.0f", range.start)
-    val secondVisibleItem = String.format(Locale.ROOT, "%.0f", range.endInclusive)
+    val firstVisibleItem = String.format(Locale.ROOT, "%.0f м", range.start)
+    val secondVisibleItem = String.format(Locale.ROOT, "%.0f м", range.endInclusive)
 }
 
 data class PriceRange(
@@ -65,15 +65,15 @@ interface QuarterGenerator {
         override fun generationWithStart(startQuarter: Int, year: Int) = when (startQuarter) {
             Quarters.ONE.value -> {
                 (startQuarter..Quarters.THREE.value).map {
-                    Pair("$it кв $year", LocalDate.of(year, 3, 31))
+                    Pair("$it кв", LocalDate.of(year, 3, 31))
                 }
             }
             Quarters.TWO.value -> {
                 (startQuarter..Quarters.THREE.value).map {
-                    Pair("$it кв $year", LocalDate.of(year, 6, 30))
+                    Pair("$it кв", LocalDate.of(year, 6, 30))
                 }
             }
-            else -> listOf(Pair("$startQuarter кв $year", LocalDate.of(year, 9, 30)))
+            else -> listOf(Pair("$startQuarter кв", LocalDate.of(year, 9, 30)))
         }
 
         override fun simpleGeneration(year: Int) = generationWithStart(1, year)

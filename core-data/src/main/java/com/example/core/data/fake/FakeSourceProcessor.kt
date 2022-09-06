@@ -73,7 +73,7 @@ interface FakeSourceProcessor {
                 listOf(
                     Pair("Все", LocalDate.of(2015, 12, 1)),
                     Pair("Сдан", LocalDate.now()),
-                    Pair("4 кв 2023", LocalDate.of(2023, 12, 31))
+                    Pair("4 кв", LocalDate.of(2023, 12, 31))
                 )
             )
                 .zipWith(observableComplex.flatMap { complex ->

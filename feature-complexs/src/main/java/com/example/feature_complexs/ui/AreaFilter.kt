@@ -1,6 +1,5 @@
 package com.example.feature_complexs.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -25,12 +25,12 @@ import com.example.feature_complexs.R
 
 @Composable
 internal fun AreaFilter(viewModel: ComplexViewModel) {
-    AreaTittle(normalText = stringResource(id = R.string.area_tittle), topText = "2")
+    AreaText(normalText = stringResource(id = R.string.area_tittle), topText = "2")
     RangeContainer(viewModel)
 }
 
 @Composable
-internal fun AreaTittle(
+internal fun AreaText(
     normalText: String,
     normalTextFontSize: TextUnit = MaterialTheme.typography.subtitle1.fontSize,
     topText: String,
@@ -38,7 +38,7 @@ internal fun AreaTittle(
 ) {
     Text(text = buildAnnotatedString {
         withStyle(style = SpanStyle(fontSize = normalTextFontSize)) {
-            append(normalText.uppercase())
+            append(normalText)
         }
         withStyle(
             style = SpanStyle(
@@ -62,14 +62,25 @@ internal fun RangeContainer(
         viewModel.viewState.subscribeAsState(initial = viewModel.viewState.blockingFirst())
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = viewState.value.filters.areaRange.firstVisibleItem)
-        Text(text = viewState.value.filters.areaRange.secondVisibleItem)
+        AreaText(
+            normalText = viewState.value.filters.areaRange.firstVisibleItem,
+            topText = "2",
+            normalTextFontSize = MaterialTheme.typography.subtitle2.fontSize
+        )
+        AreaText(
+            normalText = viewState.value.filters.areaRange.secondVisibleItem,
+            topText = "2",
+            normalTextFontSize = MaterialTheme.typography.subtitle2.fontSize
+        )
     }
 
     RangeSlider(
         value = viewState.value.filters.areaRange.range,
         onValueChange = { viewModel.processUiEvent(ComplexUiEvent.OnAreaRangeChanged(it)) },
-        colors = SliderDefaults.colors(),
+        colors = SliderDefaults.colors(
+            thumbColor = colorResource(id = R.color.light_blue),
+            activeTrackColor = colorResource(id = R.color.light_blue)
+        ),
         valueRange = viewState.value.filters.areaRange.initialRange
     )
 }

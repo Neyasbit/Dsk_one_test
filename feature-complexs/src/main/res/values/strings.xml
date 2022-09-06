@@ -7,4 +7,10 @@
     <string name="price_from">от %.1fM ₽</string>
     <string name="time_tittle">%d минут</string>
     <string name="ready_tittle">Готовность до</string>
+    <string name="close">close</string>
+    <string name="Reset">Сбросить</string>
+    <string name="map">map</string>
+    <string name="ic_filter">filters</string>
+    <string name="top_bar_tittle">Москва и МО</string>
+    <string name="show">Показать</string>
 </resources>
